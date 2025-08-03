@@ -1,0 +1,53 @@
+﻿@model EventSchedular.Entities.Category
+
+@{
+    ViewBag.Title = "CreateCategory";
+    Layout = "~/Views/Layout/Index.cshtml";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Yeni Kategori</h3>
+                        </div>
+
+                        @using (Html.BeginForm("CreateCategory", "Category", FormMethod.Post))
+                        {
+                            <div class="card-body">
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.CategoryName, "Kategori Adı")
+                                    @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control", placeholder = "Kategori adını girin" })
+                                    @Html.ValidationMessageFor(x => x.CategoryName, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.CategoryColor, "Kategori Rengi")
+                                    @Html.TextBoxFor(x => x.CategoryColor, new { @type = "color", @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.CategoryColor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Kaydet
+                                </button>
+                                <a href="/Category/CategoryList" class="btn btn-secondary float-right">
+                                    <i class="fas fa-arrow-left"></i> Geri
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

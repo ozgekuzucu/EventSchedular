@@ -1,0 +1,63 @@
+﻿@model EventSchedular.Entities.Category
+
+@{
+    ViewBag.Title = "UpdateCategory";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+@Html.Partial("/Views/Layout/PartialHead.cshtml")
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        @Html.Partial("/Views/Layout/PartialNavbar.cshtml")
+
+        @Html.Partial("/Views/Layout/PartialSidebar.cshtml")
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="content">
+                <div class="container-fluid">
+                    <h2>Kategori Düzenle</h2>
+
+                    @using (Html.BeginForm("UpdateCategory", "Category", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(m => m.CategoryId)
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CategoryName, "Kategori Adı")
+                            @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control", placeholder = "Kategori Adı girin" })
+                            @Html.ValidationMessageFor(m => m.CategoryName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CategoryColor, "Renk Seç")
+                            <input type="color" id="colorPicker" name="CategoryColor" value="@Model.CategoryColor" class="form-control" style="width: 100px;" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a href="@Url.Action("CategoryList", "Category")" class="btn btn-secondary">İptal</a>
+                    }
+                </div>
+            </section>
+        </div>
+        @Html.Partial("/Views/Layout/PartialFooter.cshtml")
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    @Html.Partial("/Views/Layout/PartialScript.cshtml")
+</body>
+</html>

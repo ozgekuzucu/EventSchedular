@@ -1,0 +1,100 @@
+﻿@model List<EventSchedular.Entities.Category>
+
+@{
+    ViewBag.Title = "CategoryList";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+@Html.Partial("/Views/Layout/PartialHead.cshtml")
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        @Html.Partial("/Views/Layout/PartialNavbar.cshtml")
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        @Html.Partial("/Views/Layout/PartialSidebar.cshtml")
+
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <section class="col-lg-12 connectedSortable">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="ion ion-clipboard mr-1"></i>
+                                        Kategori Listesi
+                                    </h3>
+                                </div>
+                                <div class="card-body table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10px">#</th>
+                                                <th>Kategori Adı</th>
+                                                <th>Renk</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@item.CategoryId</td>
+                                                    <td>@item.CategoryName</td>
+                                                    <td style="display: flex; align-items: center; gap: 10px;">
+                                                        <div style="flex-grow: 1;">
+                                                            <div class="progress progress-xs mb-0">
+                                                                <div class="progress-bar" style="background-color: @item.CategoryColor; width: 100%"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-sm btn-outline-success" title="Düzenle" style="white-space: nowrap;">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="/Category/DeleteCategory/@item.CategoryId" class="btn btn-sm btn-outline-danger" title="Sil"
+                                                           onclick="return confirm('Silmek istediğinize emin misiniz?');" style="white-space: nowrap;">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    </td>
+
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer clearfix">
+                                    <a type="button" class="btn btn-success float-right" href="/Category/CreateCategory/"><i class="fas fa-plus"></i> Kategori Ekle</a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+        @Html.Partial("/Views/Layout/PartialFooter.cshtml")
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    @Html.Partial("/Views/Layout/PartialScript.cshtml")
+</body>
+</html>
+
+

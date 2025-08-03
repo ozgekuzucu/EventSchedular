@@ -1,0 +1,119 @@
+﻿@model List<EventSchedular.Entities.Event>
+
+@{
+    ViewBag.Title = "EventList";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+@Html.Partial("/Views/Layout/PartialHead.cshtml")
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        @Html.Partial("/Views/Layout/PartialNavbar.cshtml")
+
+        @Html.Partial("/Views/Layout/PartialSidebar.cshtml")
+
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <h1 class="m-0"></h1>
+                            <h2>Etkinlik Listesi</h2>
+
+                            @Html.AntiForgeryToken()
+
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th>Başlangıç Tarihi</th>
+                                        <th>Bitiş Tarihi</th>
+                                        <th>Kategori</th>
+                                        <th>Güncelle/Sil</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var evt in Model)
+                                    {
+                                        <tr id="event-row-@evt.EventId">
+                                            <td>@evt.Title</td>
+                                            <td>@(evt.StartDate.HasValue ? evt.StartDate.Value.ToString("g") : "-")</td>
+                                            <td>@(evt.EndDate.HasValue ? evt.EndDate.Value.ToString("g") : "-")</td>
+                                            <td style="color:@evt.Category.CategoryColor;">@evt.Category.CategoryName</td>
+                                            <td style="display: flex; align-items: center; gap: 10px;">
+                                                <a href="/Event/UpdateEventPage/@evt.EventId" class="btn btn-sm btn-outline-success" title="Düzenle" style="white-space: nowrap;">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger delete-event-btn" data-event-id="@evt.EventId" style="white-space: nowrap;">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    Sil
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @Html.Partial("/Views/Layout/PartialFooter.cshtml")
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    @Html.Partial("/Views/Layout/PartialScript.cshtml")
+</body>
+</html>
+
+<script>
+$(document).ready(function() {
+
+    $(document).on('click', '.delete-event-btn', function() {
+        var eventId = $(this).data('event-id');
+        var $button = $(this);
+        var $row = $('#event-row-' + eventId);
+
+        if(confirm('Bu etkinliği silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+
+            // Butonu pasif yap
+            $button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Siliniyor...');
+
+            $.ajax({
+                url: '@Url.Action("DeleteEvent", "Event")',
+                type: 'POST',
+                data: {
+                    id: eventId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        alert('Etkinlik başarıyla silindi!');
+                        $row.fadeOut(300, function() {
+                            $(this).remove();
+                        });
+                    } else {
+                        alert('Etkinlik silinirken hata oluştu: ' + response.message);
+                        // Butonu tekrar aktif et
+                        $button.prop('disabled', false).html('<i class="fas fa-trash-alt"></i> Sil');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error:', xhr.responseText);
+                    alert('Sunucu hatası oluştu: ' + error);
+                    // Butonu tekrar aktif et
+                    $button.prop('disabled', false).html('<i class="fas fa-trash-alt"></i> Sil');
+                }
+            });
+        }
+    });
+
+});
+</script>

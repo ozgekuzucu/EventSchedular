@@ -1,0 +1,487 @@
+﻿@model EventSchedular.Entities.Event
+@{
+    ViewBag.Title = "UpdateEventPage";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+@Html.Partial("/Views/Layout/PartialHead.cshtml")
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+        @Html.Partial("/Views/Layout/PartialNavbar.cshtml")
+
+        @Html.Partial("/Views/Layout/PartialSidebar.cshtml")
+
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Etkinlik Düzenle</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Ana Sayfa</a></li>
+                                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Event")">Etkinlikler</a></li>
+                                <li class="breadcrumb-item active">Düzenle</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- Sol Kolon - Form -->
+                        <div class="col-md-8">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-edit mr-2"></i>
+                                        Etkinlik Bilgileri
+                                    </h3>
+                                </div>
+
+                                @using (Html.BeginForm("UpdateEventPage", "Event", FormMethod.Post, new { @class = "ajax-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(m => m.EventId)
+
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.Title, "Etkinlik Başlığı", new { @class = "form-label" })
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Etkinlik başlığını giriniz...", required = "required" })
+                                            </div>
+                                            @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.CategoryId, "Kategori", new { @class = "form-label" })
+
+                                            <div class="color-palette mb-3" id="color-palette">
+                                                @foreach (var cat in ViewBag.Categories as List<EventSchedular.Entities.Category>)
+                                                {
+                                                    <div class="color-circle @(Model.CategoryId == cat.CategoryId ? "active" : "")"
+                                                         data-category-id="@cat.CategoryId"
+                                                         data-category-color="@cat.CategoryColor"
+                                                         data-tooltip="@cat.CategoryName"
+                                                         title="@cat.CategoryName"
+                                                         style="background-color: @cat.CategoryColor;">
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                                                </div>
+                                                @Html.DropDownListFor(m => m.CategoryId,
+                                                    new SelectList(ViewBag.Categories as List<EventSchedular.Entities.Category>, "CategoryId", "CategoryName", Model.CategoryId),
+                                                    "Kategori seçiniz...",
+                                                    new { @class = "form-control", id = "category-dropdown", required = "required" })
+                                            </div>
+                                            @Html.ValidationMessageFor(m => m.CategoryId, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.StartDate, "Başlangıç Tarihi", new { @class = "form-label" })
+                                                    <div class="input-group date" id="start-date-picker" data-target-input="nearest">
+                                                        <div class="input-group-prepend" data-target="#start-date-picker" data-toggle="datetimepicker">
+                                                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.StartDate, "{0:dd.MM.yyyy}", new { @class = "form-control datetimepicker-input", data_target = "#start-date-picker", required = "required" })
+                                                    </div>
+                                                    @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(m => m.EndDate, "Bitiş Tarihi", new { @class = "form-label" })
+                                                    <div class="input-group date" id="end-date-picker" data-target-input="nearest">
+                                                        <div class="input-group-prepend" data-target="#end-date-picker" data-toggle="datetimepicker">
+                                                            <div class="input-group-text"><i class="fas fa-calendar-check"></i></div>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.EndDate, "{0:dd.MM.yyyy}", new { @class = "form-control datetimepicker-input", data_target = "#end-date-picker" })
+                                                    </div>
+                                                    @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save mr-1"></i>
+                                            Güncelle
+                                        </button>
+                                        <a href="@Url.Action("Index", "Event")" class="btn btn-secondary ml-2">
+                                            <i class="fas fa-times mr-1"></i>
+                                            İptal
+                                        </a>
+                                        <button type="button" class="btn btn-danger float-right" id="delete-event" data-event-id="@Model.EventId">
+                                            <i class="fas fa-trash mr-1"></i>
+                                            Sil
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card card-success">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-eye mr-2"></i>
+                                        Önizleme
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="event-preview" id="event-preview">
+                                        <div class="event-item mb-3 p-3 rounded" style="background-color: @(Model.Category?.CategoryColor ?? "#007bff"); color: white;">
+                                            <h5 class="event-preview-title">@Model.Title</h5>
+                                            <p class="mb-1">
+                                                <i class="fas fa-calendar mr-1"></i>
+                                                <span class="event-preview-date">@(Model.StartDate?.ToString("dd.MM.yyyy") ?? "")</span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <i class="fas fa-tag mr-1"></i>
+                                                <span class="event-preview-category">@(Model.Category?.CategoryName ?? "Kategori seçiniz")</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Etkinlik Detayları
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="info-box-content mb-3">
+                                        <span class="info-box-text">Etkinlik ID: </span>
+                                        <span class="info-box-number text-sm">#@Model.EventId</span>
+                                    </div>
+                                    <div class="info-box-content mb-3">
+                                        <span class="info-box-text">Başlangıç Tarihi: </span>
+                                        <span class="info-box-number text-sm">@(Model.StartDate?.ToString("dd.MM.yyyy") ?? "Belirtilmemiş")</span>
+                                    </div>
+                                    @if (Model.EndDate != null)
+                                    {
+                                        <div class="info-box-content mb-3">
+                                            <span class="info-box-text">Bitiş Tarihi: </span>
+                                            <span class="info-box-number text-sm">@(Model.EndDate?.ToString("dd.MM.yyyy"))</span>
+                                        </div>
+                                    }
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Durum</span>
+                                        <span class="info-box-number">
+                                            @if (Model.StartDate > DateTime.Now)
+                                            {
+                                                <span class="badge badge-info">Gelecek</span>
+                                            }
+                                            else if (Model.EndDate != null && Model.EndDate < DateTime.Now)
+                                            {
+                                                <span class="badge badge-secondary">Tamamlandı</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-success">Devam Ediyor</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-lightbulb mr-2"></i>
+                                        İpuçları
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success mr-2"></i>
+                                            Renk dairelerine tıklayarak kategori seçebilirsiniz
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success mr-2"></i>
+                                            Başlangıç tarihi zorunlu, bitiş tarihi isteğe bağlıdır
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success mr-2"></i>
+                                            Önizleme bölümünden değişiklikleri kontrol edin
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        @Html.Partial("/Views/Layout/PartialFooter.cshtml")
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    @Html.Partial("/Views/Layout/PartialScript.cshtml")
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/tr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <style>
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .color-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+            .color-circle:hover {
+                transform: scale(1.1);
+                border-color: #007bff;
+            }
+
+            .color-circle.active {
+                border-color: #007bff;
+                box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+                transform: scale(1.05);
+            }
+
+        .event-preview .event-item {
+            border-left: 5px solid rgba(255,255,255,0.5);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+    </style>
+
+    <script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            updatePreview();
+        }, 100);
+        moment.locale('tr');
+        $('#start-date-picker').datetimepicker({
+            format: 'DD.MM.YYYY',
+            locale: 'tr',
+            icons: {
+                time: 'fas fa-clock',
+                date: 'fas fa-calendar',
+                up: 'fas fa-chevron-up',
+                down: 'fas fa-chevron-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'fas fa-calendar-check',
+                clear: 'fas fa-trash',
+                close: 'fas fa-times'
+            },
+            buttons: {
+                showToday: true,
+                showClear: true,
+                showClose: true
+            }
+        });
+
+        $('#end-date-picker').datetimepicker({
+            format: 'DD.MM.YYYY',
+            locale: 'tr',
+            useCurrent: false,
+            icons: {
+                time: 'fas fa-clock',
+                date: 'fas fa-calendar',
+                up: 'fas fa-chevron-up',
+                down: 'fas fa-chevron-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'fas fa-calendar-check',
+                clear: 'fas fa-trash',
+                close: 'fas fa-times'
+            },
+            buttons: {
+                showToday: true,
+                showClear: true,
+                showClose: true
+            }
+        });
+
+        $("#start-date-picker").on("change.datetimepicker", function (e) {
+            if (e.date) {
+                $('#end-date-picker').datetimepicker('minDate', e.date);
+            }
+            updatePreview(); // Tarih değiştiğinde önizlemeyi güncelle
+        });
+
+        $("#end-date-picker").on("change.datetimepicker", function (e) {
+            if (e.date) {
+                $('#start-date-picker').datetimepicker('maxDate', e.date);
+            }
+            updatePreview(); // Tarih değiştiğinde önizlemeyi güncelle
+        });
+
+        // Input değişikliklerinde önizleme güncelle
+        $('#StartDate, #EndDate').on('input change blur', function() {
+            setTimeout(updatePreview, 100);
+        });
+
+        $('.color-circle').on('click', function() {
+            var categoryId = $(this).data('category-id');
+            var categoryColor = $(this).data('category-color');
+
+            // Active class güncelle
+            $('.color-circle').removeClass('active');
+            $(this).addClass('active');
+
+            // Dropdown güncelle
+            $('#category-dropdown').val(categoryId);
+
+            // Önizlemeyi güncelle
+            updatePreview();
+        });
+
+        $('#category-dropdown').on('change', function() {
+            var selectedId = $(this).val();
+
+            $('.color-circle').removeClass('active');
+            $('.color-circle[data-category-id="' + selectedId + '"]').addClass('active');
+
+            updatePreview();
+        });
+
+        $('#Title, #StartDate, #EndDate').on('input change keyup', function() {
+            updatePreview();
+        });
+
+        function updatePreview() {
+            var title = $('#Title').val() || '@(Model.Title ?? "Etkinlik Başlığı")';
+            var startDate = $('#StartDate').val() || '@(Model.StartDate?.ToString("dd.MM.yyyy") ?? "")';
+
+            var categoryName = 'Kategori seçiniz';
+            var categoryColor = '#007bff'; // Varsayılan renk
+
+            var activeColorCircle = $('.color-circle.active');
+            if (activeColorCircle.length > 0) {
+                categoryColor = activeColorCircle.data('category-color');
+                categoryName = activeColorCircle.attr('title') || activeColorCircle.data('tooltip');
+            } else {
+
+                var selectedOption = $('#category-dropdown option:selected');
+                if (selectedOption.val() && selectedOption.val() !== '') {
+                    categoryName = selectedOption.text();
+         
+                    var colorCircle = $('.color-circle[data-category-id="' + selectedOption.val() + '"]');
+                    if (colorCircle.length > 0) {
+                        categoryColor = colorCircle.data('category-color');
+                    }
+                }
+            }
+
+            if (categoryName === 'Kategori seçiniz...') {
+                categoryName = 'Kategori seçiniz';
+            }
+
+            var previewHtml = `
+                <div class="event-item mb-3 p-3 rounded" style="background-color: ${categoryColor}; color: white;">
+                    <h5 class="event-preview-title">${title}</h5>
+                    <p class="mb-1">
+                        <i class="fas fa-calendar mr-1"></i>
+                        <span class="event-preview-date">${startDate || 'Tarih seçiniz'}</span>
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-tag mr-1"></i>
+                        <span class="event-preview-category">${categoryName}</span>
+                    </p>
+                </div>
+            `;
+
+            $('#event-preview').html(previewHtml);
+        }
+
+        // ==================== SİL BUTONU ====================
+        $('#delete-event').on('click', function() {
+            var eventId = $(this).data('event-id');
+
+            if(confirm('Bu etkinliği silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteEvent", "Event")',
+                    type: 'POST',
+                    data: {
+                        id: eventId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            alert('Etkinlik başarıyla silindi!');
+                            window.location.href = '@Url.Action("Index", "Event")';
+                        } else {
+                            alert('Etkinlik silinirken hata oluştu: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Sunucu hatası oluştu!');
+                    }
+                });
+            }
+        });
+
+        $('.ajax-form').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if(response && response.success) {
+                        alert('Etkinlik başarıyla güncellendi!');
+                        window.location.href = '@Url.Action("Index", "Event")';
+                    } else {
+                        alert('Etkinlik güncellenirken hata oluştu: ' + (response ? response.message : 'Bilinmeyen hata'));
+                    }
+                },
+                error: function() {
+                    alert('Sunucu hatası oluştu!');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

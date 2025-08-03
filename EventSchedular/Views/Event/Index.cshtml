@@ -1,0 +1,118 @@
+﻿@model List<EventSchedular.Entities.Category>
+@{
+    Layout = "~/Views/Layout/Index.cshtml";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+               
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="sticky-top mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Etkinlikler</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="external-events">
+                                    <div class="external-event bg-success">Online Eğitim</div>
+                                    <div class="external-event bg-warning">Kısa Mola</div>
+                                    <div class="external-event bg-info">Alışveriş</div>
+                                    <div class="external-event bg-primary">Sınav Hazırlığı</div>
+                                    <div class="external-event bg-danger">Spor Salonu</div>
+                                    <div class="checkbox">
+                                        <label for="drop-remove">
+                                            <input type="checkbox" id="drop-remove">
+                                            sürükledikten sonra listeden kaldır
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Etkinlik Ekle</h3>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="color-palette" id="color-palette" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #e9ecef;">
+                                    @foreach (var cat in Model)
+                                    {
+                                        <div class="color-circle @(ViewBag.SelectedCategoryId == cat.CategoryId ? "active" : "")"
+                                             data-category-id="@cat.CategoryId"
+                                             data-tooltip="@cat.CategoryName"
+                                             style="background-color: @cat.CategoryColor; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease;">
+                                        </div>
+                                    }
+                                </div>
+                                <div class="btn-group w-100" style="margin-bottom: 10px;">
+                                    <select id="category-dropdown" class="form-control">
+                                        @foreach (var cat in Model)
+                                        {
+                                            <option value="@cat.CategoryId" data-color="@cat.CategoryColor">
+                                                @cat.CategoryName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <input id="new-event" type="text" class="form-control" placeholder="Başlık">
+
+                                    <div class="input-group-append">
+                                        <button id="add-new-event" type="button" class="btn btn-primary">Ekle</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card card-primary">
+                        <div class="card-body p-0">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    #color-chooser li {
+        cursor: pointer;
+    }
+
+    .tooltip-text {
+        display: none;
+        position: absolute;
+        top: 25px; 
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 3px 6px;
+        font-size: 12px;
+        border-radius: 3px;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    #color-chooser li.selected-category .tooltip-text {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+</style>
+
